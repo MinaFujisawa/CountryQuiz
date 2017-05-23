@@ -24,10 +24,10 @@ public class QuizActivity extends AppCompatActivity {
     private int mPoint = 0;
 
     private Question[] questionList = {
-            new Question(R.string.q_Canada, false),
-            new Question(R.string.q_France, true),
+            new Question(R.string.q_canada, false),
+            new Question(R.string.q_france, true),
             new Question(R.string.q_japan, true),
-            new Question(R.string.q_USA, false),
+            new Question(R.string.q_usa, false),
     };
 
 
@@ -40,7 +40,7 @@ public class QuizActivity extends AppCompatActivity {
 
         //first question
         mQustionText = (TextView) findViewById(R.id.question_text);
-        mQustionText.setText(questionList[0].getQuestionText());
+        mQustionText.setText(questionList[0].getTextResId());
 
 
         mTureButton = (Button) findViewById(R.id.true_button);
@@ -75,7 +75,7 @@ public class QuizActivity extends AppCompatActivity {
                 mCurrentIndex++;
                 mCurrentIndex = mCurrentIndex % (questionList.length);
                 mQustionText = (TextView) findViewById(R.id.question_text);
-                mQustionText.setText(questionList[mCurrentIndex].getQuestionText());
+                mQustionText.setText(questionList[mCurrentIndex].getTextResId());
                 mTureButton.setEnabled(true);
                 mFalseButton.setEnabled(true);
             }
@@ -92,7 +92,7 @@ public class QuizActivity extends AppCompatActivity {
                 }
 
                 mQustionText = (TextView) findViewById(R.id.question_text);
-                mQustionText.setText(questionList[mCurrentIndex].getQuestionText());
+                mQustionText.setText(questionList[mCurrentIndex].getTextResId());
             }
         });
     }
@@ -140,7 +140,7 @@ public class QuizActivity extends AppCompatActivity {
 //    }
 
     private void check(boolean userAnswer) {
-        if (questionList[mCurrentIndex].getAnswer() == userAnswer) {
+        if (questionList[mCurrentIndex].isAnswerTrue() == userAnswer) {
             Toast.makeText(QuizActivity.this, R.string.correct_toast, Toast.LENGTH_SHORT).show();
             mPoint++;
         } else {
@@ -150,7 +150,6 @@ public class QuizActivity extends AppCompatActivity {
 
     private void showResult() {
         double score = mPoint / (double)questionList.length * 100;
-        String result = ;
         Toast.makeText(QuizActivity.this, String.valueOf(score) + "%", Toast.LENGTH_SHORT).show();
     }
 

@@ -1,14 +1,14 @@
 <resources>
-    <string name="app_name">Color Quiz</string>
-    <string name="start">START!</string>
-    <string name="result">Your Score</string>
-    <string name="c_red">Red</string>
-    <string name="c_blue">Blue</string>
-    <string name="c_yellow">Yellow</string>
-    <string name="c_green">Green</string>
-    <string name="c_black">Black</string>
-    <string name="c_pink">Pink</string>
+    <string name="app_name">CountryQuiz</string>
+    <string name="true_button">True</string>
+    <string name="false_button">False</string>
+    <string name="next_button">Next></string>
     <string name="correct_toast">Correct!</string>
     <string name="incorrect_toast">Incorrect!</string>
+    <string name="q_canada">Vancouver is the capital of Canada.</string>
+    <string name="q_japan">Tokyo is the capital of Japan.</string>
+    <string name="q_usa">New-York is the capital of USA.</string>
+    <string name="q_korea">Seoul is the capital of South Korea.</string>
+    <string name="q_france">Paris is the capital of France.</string>
 
 </resources>
