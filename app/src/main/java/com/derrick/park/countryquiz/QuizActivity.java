@@ -22,6 +22,7 @@ public class QuizActivity extends AppCompatActivity {
     private TextView mQustionText;
     private int mCurrentIndex = 0;
     private int mPoint = 0;
+    private static final String KEY_INDEX = "Index";
 
     private Question[] questionList = {
             new Question(R.string.q_canada, false),
@@ -33,10 +34,13 @@ public class QuizActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate()");
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
+        Log.d(TAG, "onCreate()");
+        if (savedInstanceState != null) {
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+        }
+
 
         //first question
         mQustionText = (TextView) findViewById(R.id.question_text);
@@ -49,8 +53,7 @@ public class QuizActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // anything you want when the button is pressed
                 check(true);
-                mTureButton.setEnabled(false);
-                mFalseButton.setEnabled(false);
+                updateBtn(true);
             }
         });
 
@@ -59,8 +62,8 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 check(false);
-                mTureButton.setEnabled(false);
-                mFalseButton.setEnabled(false);
+                updateBtn(true);
+
             }
 
         });
@@ -69,15 +72,14 @@ public class QuizActivity extends AppCompatActivity {
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mCurrentIndex == questionList.length-1) {
+                mCurrentIndex++;
+                if (mCurrentIndex == questionList.length) {
                     showResult();
                 }
-                mCurrentIndex++;
                 mCurrentIndex = mCurrentIndex % (questionList.length);
                 mQustionText = (TextView) findViewById(R.id.question_text);
                 mQustionText.setText(questionList[mCurrentIndex].getTextResId());
-                mTureButton.setEnabled(true);
-                mFalseButton.setEnabled(true);
+                updateBtn(false);
             }
         });
 
@@ -97,17 +99,13 @@ public class QuizActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
 
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        Log.d(TAG,"onSaveInstanceState()");
-//        outState.putInt(KEY_INDEX, mCurrentIndex);
-//    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(TAG, "onSaveInstanceState()");
+        outState.putInt(KEY_INDEX, mCurrentIndex);
+    }
 
     //    @Override
 //    protected void onStart() {
@@ -148,8 +146,13 @@ public class QuizActivity extends AppCompatActivity {
         }
     }
 
+    private void updateBtn(boolean answered) {
+        mTureButton.setEnabled(!answered);
+        mFalseButton.setEnabled(!answered);
+    }
+
     private void showResult() {
-        double score = mPoint / (double)questionList.length * 100;
+        double score = mPoint / (double) questionList.length * 100;
         Toast.makeText(QuizActivity.this, String.valueOf(score) + "%", Toast.LENGTH_SHORT).show();
     }
 
