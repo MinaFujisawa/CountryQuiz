@@ -1,5 +1,6 @@
 package com.derrick.park.countryquiz;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,12 +18,14 @@ public class QuizActivity extends AppCompatActivity {
     private final String TAG = "QuizActivity";
     private Button mTureButton;
     private Button mFalseButton;
+    private Button mCheatButton;
     private ImageButton mNextButton;
     private ImageButton mPrevButton;
     private TextView mQustionText;
     private int mCurrentIndex = 0;
     private int mPoint = 0;
     private static final String KEY_INDEX = "Index";
+    private boolean mIsCheated;
 
     private Question[] questionList = {
             new Question(R.string.q_canada, false),
@@ -36,6 +39,7 @@ public class QuizActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
+
         Log.d(TAG, "onCreate()");
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
@@ -68,6 +72,18 @@ public class QuizActivity extends AppCompatActivity {
 
         });
 
+        mCheatButton = (Button) findViewById(R.id.cheat_button);
+        mCheatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplication(), CheatActivity.class);
+                intent.putExtra("answer", questionList[mCurrentIndex].isAnswerTrue());
+                int requestCode = 123;
+                startActivityForResult(intent, requestCode);
+            }
+        });
+
+
         mNextButton = (ImageButton) findViewById(R.id.next_button);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,8 +113,9 @@ public class QuizActivity extends AppCompatActivity {
                 mQustionText.setText(questionList[mCurrentIndex].getTextResId());
             }
         });
-    }
 
+
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -107,42 +124,26 @@ public class QuizActivity extends AppCompatActivity {
         outState.putInt(KEY_INDEX, mCurrentIndex);
     }
 
-    //    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        Log.d(TAG,"onStart()");
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        Log.d(TAG,"onResumed()");
-//    }
-//
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        Log.d(TAG,"onResumed()");
-//    }
-//
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        Log.d(TAG,"onStop()");
-//    }
-//
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        Log.d(TAG,"onDestroy()");
-//    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 123 && resultCode == RESULT_OK && data != null) {
+            mIsCheated = data.getBooleanExtra("IS_CHEATED", false);
+        }
+    }
+
 
     private void check(boolean userAnswer) {
-        if (questionList[mCurrentIndex].isAnswerTrue() == userAnswer) {
-            Toast.makeText(QuizActivity.this, R.string.correct_toast, Toast.LENGTH_SHORT).show();
-            mPoint++;
+        if (mIsCheated) {
+            Toast.makeText(QuizActivity.this, R.string.cheat_toast, Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(QuizActivity.this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
+            if (questionList[mCurrentIndex].isAnswerTrue() == userAnswer) {
+                Toast.makeText(QuizActivity.this, R.string.correct_toast, Toast.LENGTH_SHORT).show();
+                mPoint++;
+            } else {
+                Toast.makeText(QuizActivity.this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -155,5 +156,6 @@ public class QuizActivity extends AppCompatActivity {
         double score = mPoint / (double) questionList.length * 100;
         Toast.makeText(QuizActivity.this, String.valueOf(score) + "%", Toast.LENGTH_SHORT).show();
     }
+
 
 }

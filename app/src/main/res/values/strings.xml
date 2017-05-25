@@ -3,6 +3,7 @@
     <string name="true_button">True</string>
     <string name="false_button">False</string>
     <string name="next_button">Next></string>
+    <string name="cheat_toast">Cheating is wrong!</string>
     <string name="correct_toast">Correct!</string>
     <string name="incorrect_toast">Incorrect!</string>
     <string name="q_canada">Vancouver is the capital of Canada.</string>
@@ -10,5 +11,8 @@
     <string name="q_usa">New-York is the capital of USA.</string>
     <string name="q_korea">Seoul is the capital of South Korea.</string>
     <string name="q_france">Paris is the capital of France.</string>
+    <string name="cheat_button">CHEAT!</string>
+    <string name="cheat_heading">Are you sure you want to do this?</string>
+    <string name="showAnswer_button">Show Answer</string>
 
 </resources>
