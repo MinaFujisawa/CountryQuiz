@@ -3,6 +3,7 @@ package com.derrick.park.countryquiz;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -13,13 +14,21 @@ public class CheatActivity extends AppCompatActivity {
     private Button mShowButton;
     private TextView mAnswerTextView;
     private boolean mAnswer;
-    private boolean mIsCheated = false;
-
+    private boolean mIsCheatr = false;
+    private boolean mIsShowing = false;
+    private static final String IS_CHEATER = "com.derrick.park.countryquiz.is_cheated"; //should be very unique
+    private static final String KEY = "key";
+    private final String TAG = "CheatActivity";
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cheat);
+
+        if (savedInstanceState != null) {
+            mIsShowing = savedInstanceState.getBoolean(KEY, false);
+        }
 
         mAnswer = getIntent().getBooleanExtra("answer", false);
 
@@ -29,19 +38,32 @@ public class CheatActivity extends AppCompatActivity {
         mShowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mIsCheatr = true;
                 mAnswerTextView.setText(String.valueOf(mAnswer));
-                mIsCheated = true;
+                mIsShowing = true;
             }
         });
 
+        // for changing orientation
+        if(mIsShowing){
+            mAnswerTextView.setText(String.valueOf(mAnswer));
+            mIsCheatr = true;
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY, mIsShowing);
     }
 
     // for back button
     @Override
     public void onBackPressed() {
         Intent intent = new Intent();
-        intent.putExtra("IS_CHEATED", mIsCheated);
+        intent.putExtra(IS_CHEATER, mIsCheatr);
         setResult(RESULT_OK, intent);
         finish();
     }
+
 }

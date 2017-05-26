@@ -14,18 +14,25 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.util.HashMap;
+
 public class QuizActivity extends AppCompatActivity {
-    private final String TAG = "QuizActivity";
     private Button mTureButton;
     private Button mFalseButton;
     private Button mCheatButton;
     private ImageButton mNextButton;
     private ImageButton mPrevButton;
     private TextView mQustionText;
-    private int mCurrentIndex = 0;
+    private TextView mIndexTextView;
+    private int mCurrentIndex;
     private int mPoint = 0;
+    private boolean mIsCheater;
+    private HashMap<Integer,Boolean> mapCheated = new HashMap<>();
+    private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "Index";
-    private boolean mIsCheated;
+    private static final String IS_CHEATER = "com.derrick.park.countryquiz.is_cheated"; //should be very unique
+    private static final int REQUEST_CODE = 1;
+
 
     private Question[] questionList = {
             new Question(R.string.q_canada, false),
@@ -45,11 +52,14 @@ public class QuizActivity extends AppCompatActivity {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
         }
 
+        //initialize the HashMap
+        for(int i = 0 ; i<questionList.length; i++){
+            mapCheated.put(i,false);
+        }
 
         //first question
         mQustionText = (TextView) findViewById(R.id.question_text);
-        mQustionText.setText(questionList[0].getTextResId());
-
+        mQustionText.setText(questionList[mCurrentIndex].getTextResId());
 
         mTureButton = (Button) findViewById(R.id.true_button);
         mTureButton.setOnClickListener(new View.OnClickListener() {
@@ -78,8 +88,7 @@ public class QuizActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplication(), CheatActivity.class);
                 intent.putExtra("answer", questionList[mCurrentIndex].isAnswerTrue());
-                int requestCode = 123;
-                startActivityForResult(intent, requestCode);
+                startActivityForResult(intent, REQUEST_CODE);
             }
         });
 
@@ -96,6 +105,11 @@ public class QuizActivity extends AppCompatActivity {
                 mQustionText = (TextView) findViewById(R.id.question_text);
                 mQustionText.setText(questionList[mCurrentIndex].getTextResId());
                 updateBtn(false);
+                if(mapCheated.get(mCurrentIndex)){
+                    mIsCheater = true;
+                } else {
+                    mIsCheater = false;
+                }
             }
         });
 
@@ -114,6 +128,9 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
 
+//        //index
+//        mIndexTextView = (TextView) findViewById(R.id.index);
+//        mIndexTextView.setText(String.valueOf(mCurrentIndex));
 
     }
 
@@ -127,15 +144,16 @@ public class QuizActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 123 && resultCode == RESULT_OK && data != null) {
-            mIsCheated = data.getBooleanExtra("IS_CHEATED", false);
+        //unpackage
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            mIsCheater = data.getBooleanExtra(IS_CHEATER, false);
+            mapCheated.put(mCurrentIndex,mIsCheater);
         }
     }
 
 
     private void check(boolean userAnswer) {
-        if (mIsCheated) {
+        if (mIsCheater) {
             Toast.makeText(QuizActivity.this, R.string.cheat_toast, Toast.LENGTH_SHORT).show();
         } else {
             if (questionList[mCurrentIndex].isAnswerTrue() == userAnswer) {
@@ -156,6 +174,5 @@ public class QuizActivity extends AppCompatActivity {
         double score = mPoint / (double) questionList.length * 100;
         Toast.makeText(QuizActivity.this, String.valueOf(score) + "%", Toast.LENGTH_SHORT).show();
     }
-
 
 }
