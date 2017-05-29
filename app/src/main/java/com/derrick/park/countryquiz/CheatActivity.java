@@ -1,6 +1,7 @@
 package com.derrick.park.countryquiz;
 
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 public class CheatActivity extends AppCompatActivity {
     private Button mShowButton;
     private TextView mAnswerTextView;
+    private TextView mAPILevelTextView;
     private boolean mAnswer;
     private boolean mIsCheatr = false;
     private boolean mIsShowing = false;
@@ -34,6 +36,10 @@ public class CheatActivity extends AppCompatActivity {
 
         mAnswerTextView = (TextView) findViewById(R.id.answer);
 
+        mAPILevelTextView = (TextView) findViewById(R.id.apiLevel);
+        mAPILevelTextView.setText(String.valueOf(android.os.Build.VERSION.SDK));
+
+        //for the button
         mShowButton = (Button) findViewById(R.id.showCheat_utton);
         mShowButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,6 +47,10 @@ public class CheatActivity extends AppCompatActivity {
                 mIsCheatr = true;
                 mAnswerTextView.setText(String.valueOf(mAnswer));
                 mIsShowing = true;
+
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+
+                }
             }
         });
 

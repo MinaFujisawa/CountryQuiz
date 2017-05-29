@@ -14,5 +14,6 @@
     <string name="cheat_button">CHEAT!</string>
     <string name="cheat_heading">Are you sure you want to do this?</string>
     <string name="showAnswer_button">Show Answer</string>
+    <string name="api">API Level </string>
 
 </resources>
