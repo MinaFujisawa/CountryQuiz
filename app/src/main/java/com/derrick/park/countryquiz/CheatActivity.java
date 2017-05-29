@@ -15,12 +15,14 @@ public class CheatActivity extends AppCompatActivity {
     private Button mShowButton;
     private TextView mAnswerTextView;
     private TextView mAPILevelTextView;
+    private TextView mCheatingChanceTextView;
     private boolean mAnswer;
-    private boolean mIsCheatr = false;
+    private boolean mIsCheater = false;
     private boolean mIsShowing = false;
+    private int numCheatingChance = 5;
     private static final String IS_CHEATER = "com.derrick.park.countryquiz.is_cheated"; //should be very unique
     private static final String KEY = "key";
-    private final String TAG = "CheatActivity";
+    private static final String TAG = "CheatActivity";
 
     @Override
 
@@ -28,25 +30,28 @@ public class CheatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cheat);
 
+        // for changing orientation
         if (savedInstanceState != null) {
             mIsShowing = savedInstanceState.getBoolean(KEY, false);
         }
 
-        mAnswer = getIntent().getBooleanExtra("answer", false);
+        mCheatingChanceTextView = (TextView) findViewById(R.id.cheatingChance);
+        mCheatingChanceTextView.setText(String.valueOf(numCheatingChance));
 
-        mAnswerTextView = (TextView) findViewById(R.id.answer);
-
-        mAPILevelTextView = (TextView) findViewById(R.id.apiLevel);
-        mAPILevelTextView.setText(String.valueOf(android.os.Build.VERSION.SDK));
 
         //for the button
         mShowButton = (Button) findViewById(R.id.showCheat_utton);
         mShowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mIsCheatr = true;
+                mIsCheater = true;
                 mAnswerTextView.setText(String.valueOf(mAnswer));
                 mIsShowing = true;
+                numCheatingChance--;
+                mCheatingChanceTextView.setText(String.valueOf(numCheatingChance));
+                if(numCheatingChance == 0){
+                    mShowButton.setEnabled(false);
+                }
 
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
 
@@ -54,10 +59,18 @@ public class CheatActivity extends AppCompatActivity {
             }
         });
 
+
+
+        mAnswer = getIntent().getBooleanExtra("answer", false);
+        mAnswerTextView = (TextView) findViewById(R.id.answer);
+
+        mAPILevelTextView = (TextView) findViewById(R.id.apiLevel);
+        mAPILevelTextView.setText(String.valueOf(android.os.Build.VERSION.SDK));
+
         // for changing orientation
         if(mIsShowing){
             mAnswerTextView.setText(String.valueOf(mAnswer));
-            mIsCheatr = true;
+            mIsCheater = true;
         }
     }
 
@@ -71,7 +84,7 @@ public class CheatActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent intent = new Intent();
-        intent.putExtra(IS_CHEATER, mIsCheatr);
+        intent.putExtra(IS_CHEATER, mIsCheater);
         setResult(RESULT_OK, intent);
         finish();
     }
